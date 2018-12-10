@@ -1,600 +1,658 @@
-1. Write a JavaScript to design a simple calculator to perform the following
-operations: sum, product, difference and quotient.
-program1.html
-<!DOCTYPE HTML>
-<html>
- <head>
-<style>
-table, td, th
-{
- border: 1px solid black;
-width: 33%;
-text-align: center;
-background-color: DarkGray;
-border-collapse:collapse;
-}
-table { margin: auto; }
-input { text-align:right; }
-</style>
- <script type="text/javascript">
- function calc(clicked_id)
- {
- var val1 = parseFloat(document.getElementById("value1").value);
- var val2 = parseFloat(document.getElementById("value2").value);
- if(isNaN(val1)||isNaN(val2))
- alert("ENTER VALID NUMBER");
-else if(clicked_id=="add")
-document.getElementById("answer").value=val1+val2;
-else if(clicked_id=="sub")
-document.getElementById("answer").value=val1-val2;
-else if(clicked_id=="mul")
-document.getElementById("answer").value=val1*val2;
-else if(clicked_id=="div")
-document.getElementById("answer").value=val1/val2;
- }
-function cls()
- {
- value1.value="0";
- value2.value="0";
- answer.value="";
- }
- </script>
- </head>
- <body>
-<table>
-<tr><th colspan="4"> SIMPLE CALCULATOR </th></tr>
- <tr><td>value1</td><td><input type="text" id="value1" value="0"/></td>
- <td>value2</td><td><input type="text" id="value2" value="0"/> </td></tr>
-<tr><td><input type="button" value="Addition" id = "add"
-onclick="calc(this.id)"/></td>
-<td><input type="button" value="Subtraction" id = "sub"
-onclick="calc(this.id)"/></td>
-<td><input type="button" value="Multiplication" id = "mul"
-onclick="calc(this.id)"/></td>
-<td><input type="button" value="Division" id ="div"
-onclick="calc(this.id)"/></td></tr>
-<tr><td>Answer:</td><td> <input type="text" id="answer" value=""
-disabled/></td>
- <td colspan="2"><input type="button" value="CLEAR ALL" onclick="cls()"/></td>
-</tr>
-</table>
- </body>
-</html>
+Program 1 : Find-S
+
+Import numpy as np
+csv = np.genfromtxt('finds.csv', delimeter = ',', dtype = 'str' )
+target = np.array(csv[:,-1])
+concept = np.array(csv[:,0:-1])
+print(csv)
+print('##########')
+print(target)
+print('##########')
+print(concept)
+print('##########')
+for i in range(len(target)):
+	if target[i]=='yes':
+		hyp = concept[i]
+		break
+for j,tup in enumerate(concept) :
+	if target[j] == 'yes' :
+		for k in range (len(tup)):
+			if tup[k] != hyp[k]:
+				hyp[k] = ‘?’
+print(hyp)
+
+
+
+Program 2 : Candidate Elimination 
+
+Import numpy as np
+csv = np.genfromtxt('dataset.csv', delimeter = ',', dtype = 'str' )
+target = np.array(csv[:,-1])
+concept = np.array(csv[:,0:-1])
+for i in range(len(target)):
+	if target[i]=='yes':
+		shyp = concept[i]
+		break
+ghyp = [['?' for i in range(6)] for j in range(6) ]
+for j,tup in enumerate(concept) :
+	if target[j] == 'yes' :
+		for k in range (len(tup)):
+			if tup[k] != shyp[j]:
+				shyp[j] = ?
+	else :
+		for k in range (len(tup)):
+			if (tup[k] != shyp [k]):
+				ghyp[k][k] = shyp[k]
+			else :
+				ghyp[k][k] = '?'
+for i,tup in enumerate(ghyp):
+	if tup == '?':
+		print(hello)
+
+print(shyp)
+print(ghyp)
+
+
+
+Program 3: ID3
+# CART on the Bank Note dataset
+from random import seed
+from random import randrange
+from csv import reader
+ 
+# Load a CSV file
+def load_csv(filename):
+	file = open(filename, "rb")
+	lines = reader(file)
+	dataset = list(lines)
+	return dataset
+ 
+# Convert string column to float
+def str_column_to_float(dataset, column):
+	for row in dataset:
+		row[column] = float(row[column].strip())
+ 
+# Split a dataset into k folds
+def cross_validation_split(dataset, n_folds):
+	dataset_split = list()
+	dataset_copy = list(dataset)
+	fold_size = int(len(dataset) / n_folds)
+	for i in range(n_folds):
+		fold = list()
+		while len(fold) < fold_size:
+			index = randrange(len(dataset_copy))
+			fold.append(dataset_copy.pop(index))
+		dataset_split.append(fold)
+	return dataset_split
+ 
+# Calculate accuracy percentage
+def accuracy_metric(actual, predicted):
+	correct = 0
+	for i in range(len(actual)):
+		if actual[i] == predicted[i]:
+			correct += 1
+	return correct / float(len(actual)) * 100.0
+ 
+# Evaluate an algorithm using a cross validation split
+def evaluate_algorithm(dataset, algorithm, n_folds, *args):
+	folds = cross_validation_split(dataset, n_folds)
+	scores = list()
+	for fold in folds:
+		train_set = list(folds)
+		train_set.remove(fold)
+		train_set = sum(train_set, [])
+		test_set = list()
+		for row in fold:
+			row_copy = list(row)
+			test_set.append(row_copy)
+			row_copy[-1] = None
+		predicted = algorithm(train_set, test_set, *args)
+		actual = [row[-1] for row in fold]
+		accuracy = accuracy_metric(actual, predicted)
+		scores.append(accuracy)
+	return scores
+ 
+# Split a dataset based on an attribute and an attribute value
+def test_split(index, value, dataset):
+	left, right = list(), list()
+	for row in dataset:
+		if row[index] < value:
+			left.append(row)
+		else:
+			right.append(row)
+	return left, right
+ 
+# Calculate the Gini index for a split dataset
+def gini_index(groups, classes):
+	# count all samples at split point
+	n_instances = float(sum([len(group) for group in groups]))
+	# sum weighted Gini index for each group
+	gini = 0.0
+	for group in groups:
+		size = float(len(group))
+		# avoid divide by zero
+		if size == 0:
+			continue
+		score = 0.0
+		# score the group based on the score for each class
+		for class_val in classes:
+			p = [row[-1] for row in group].count(class_val) / size
+			score += p * p
+		# weight the group score by its relative size
+		gini += (1.0 - score) * (size / n_instances)
+	return gini
+ 
+# Select the best split point for a dataset
+def get_split(dataset):
+	class_values = list(set(row[-1] for row in dataset))
+	b_index, b_value, b_score, b_groups = 999, 999, 999, None
+	for index in range(len(dataset[0])-1):
+		for row in dataset:
+			groups = test_split(index, row[index], dataset)
+			gini = gini_index(groups, class_values)
+			if gini < b_score:
+				b_index, b_value, b_score, b_groups = index, row[index], gini, groups
+	return {'index':b_index, 'value':b_value, 'groups':b_groups}
+ 
+# Create a terminal node value
+def to_terminal(group):
+	outcomes = [row[-1] for row in group]
+	return max(set(outcomes), key=outcomes.count)
+ 
+# Create child splits for a node or make terminal
+def split(node, max_depth, min_size, depth):
+	left, right = node['groups']
+	del(node['groups'])
+	# check for a no split
+	if not left or not right:
+		node['left'] = node['right'] = to_terminal(left + right)
+		return
+	# check for max depth
+	if depth >= max_depth:
+		node['left'], node['right'] = to_terminal(left), to_terminal(right)
+		return
+	# process left child
+	if len(left) <= min_size:
+		node['left'] = to_terminal(left)
+	else:
+		node['left'] = get_split(left)
+		split(node['left'], max_depth, min_size, depth+1)
+	# process right child
+	if len(right) <= min_size:
+		node['right'] = to_terminal(right)
+	else:
+		node['right'] = get_split(right)
+		split(node['right'], max_depth, min_size, depth+1)
+ 
+# Build a decision tree
+def build_tree(train, max_depth, min_size):
+	root = get_split(train)
+	split(root, max_depth, min_size, 1)
+	return root
+ 
+# Make a prediction with a decision tree
+def predict(node, row):
+	if row[node['index']] < node['value']:
+		if isinstance(node['left'], dict):
+			return predict(node['left'], row)
+		else:
+			return node['left']
+	else:
+		if isinstance(node['right'], dict):
+			return predict(node['right'], row)
+		else:
+			return node['right']
+ 
+# Classification and Regression Tree Algorithm
+def decision_tree(train, test, max_depth, min_size):
+	tree = build_tree(train, max_depth, min_size)
+	predictions = list()
+	for row in test:
+		prediction = predict(tree, row)
+		predictions.append(prediction)
+	return(predictions)
+ 
+# Test CART on Bank Note dataset
+seed(1)
+# load and prepare data
+filename = 'data_banknote_authentication.csv'
+dataset = load_csv(filename)
+# convert string attributes to integers
+for i in range(len(dataset[0])):
+	str_column_to_float(dataset, i)
+# evaluate algorithm
+n_folds = 5
+max_depth = 5
+min_size = 10
+scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+
+
+4th program
+
+import numpy as np
+X = np.array(([2, 9], [1, 5], [3, 6]), dtype=float) 
+y = np.array(([92], [86], [89]), dtype=float) 
+X = X/np.amax(X,axis=0) # Normalize
+y = y/100
+def sigmoid(x):
+    return 1/(1 + np.exp(-x))
+def sigmoid_grad(x):
+    return x * (1 - x)
+
+epoch=1000 
+eta =0.2 
+input_neurons = 2 
+hidden_neurons = 3 
+output_neurons = 1 
+wh=np.random.uniform(size=(input_neurons,hidden_neurons)) 
+bh=np.random.uniform(size=(1,hidden_neurons)) 
+wout=np.random.uniform(size=(hidden_neurons,output_neurons)) 
+bout=np.random.uniform(size=(1,output_neurons))
+for i in range(epoch):
+
+    h_ip=np.dot(X,wh) + bh 
+    h_act = sigmoid(h_ip) 
+    o_ip=np.dot(h_act,wout) + bout
+    output = sigmoid(o_ip)
+
+    Eo = y-output 
+    outgrad = sigmoid_grad(output)
+    d_output = Eo* outgrad 
+    Eh = d_output.dot(wout.T) 
+    hiddengrad = sigmoid_grad(h_act) 
+    d_hidden = Eh * hiddengrad
+    wout += h_act.T.dot(d_output) *eta # Dotproduct of nextlayererror and currentlayerop
+    wh += X.T.dot(d_hidden) *eta
+
+print("Normalized Input: \n" + str(X))
+print("Actual Output: \n" + str(y))
+print("Predicted Output: \n" ,output)
+
+
+
+5th program
+
+import csv
+import random
+import math
+
+def loadCsv(filename):
+	lines = csv.reader(open(filename, "r"))
+	dataset = list(lines)
+	for i in range(len(dataset)):
+		dataset[i] = [float(x) for x in dataset[i]]
+	return dataset
+
+def splitDataset(dataset, splitRatio):
+	trainSize = int(len(dataset) * splitRatio)
+	trainSet = []
+	copy = list(dataset)
+	while len(trainSet) < trainSize:
+		index = random.randrange(len(copy))
+		trainSet.append(copy.pop(index))
+	return [trainSet, copy]
+
+def separateByClass(dataset):
+	separated = {}
+	for i in range(len(dataset)):
+		vector = dataset[i]
+		if (vector[-1] not in separated):
+			separated[vector[-1]] = []
+		separated[vector[-1]].append(vector)
+	return separated
+
+def mean(numbers):
+	return sum(numbers)/float(len(numbers))
+
+def stdev(numbers):
+	avg = mean(numbers)
+	variance = sum([pow(x-avg,2) for x in numbers])/float(len(numbers)-1)
+	return math.sqrt(variance)
+
+def summarize(dataset):
+	summaries = [(mean(attribute), stdev(attribute)) for attribute in zip(*dataset)]
+	del summaries[-1]
+	return summaries
+
+def summarizeByClass(dataset):
+	separated = separateByClass(dataset)
+	summaries = {}
+	for classValue, instances in separated.items():
+		summaries[classValue] = summarize(instances)
+	return summaries
+
+def calculateProbability(x, mean, stdev):
+	exponent = math.exp(-(math.pow(x-mean,2)/(2*math.pow(stdev,2))))
+	return (1 / (math.sqrt(2*math.pi) * stdev)) * exponent
+
+def calculateClassProbabilities(summaries, inputVector):
+	probabilities = {}
+	for classValue, classSummaries in summaries.items():
+		probabilities[classValue] = 1
+		for i in range(len(classSummaries)):
+			mean, stdev = classSummaries[i]
+			x = inputVector[i]
+			probabilities[classValue] *= calculateProbability(x, mean, stdev)
+	return probabilities
+			
+def predict(summaries, inputVector):
+	probabilities = calculateClassProbabilities(summaries, inputVector)
+	bestLabel, bestProb = None, -1
+	for classValue, probability in probabilities.items():
+		if bestLabel is None or probability > bestProb:
+			bestProb = probability
+			bestLabel = classValue
+	return bestLabel
+
+def getPredictions(summaries, testSet):
+	predictions = []
+	for i in range(len(testSet)):
+		result = predict(summaries, testSet[i])
+		predictions.append(result)
+	return predictions
+
+def getAccuracy(testSet, predictions):
+    correct = 0
+    for i in range(len(testSet)):
+        #print(testSet[i][-1]," ",predictions[i])
+        if testSet[i][-1] == predictions[i]:
+            correct += 1
+        return (correct/float(len(testSet))) * 100.0
+
+def main():
+	filename = 'pima-indians-diabetes.csv'
+	splitRatio = 0.67
+	dataset = loadCsv(filename)
+	trainingSet,testSet=splitDataset(dataset, splitRatio) #dividing into training and test data
+	#trainingSet = dataset #passing entire dataset as training data
+	#testSet=[[8.0,183.0,64.0,0.0,0.0,23.3,0.672,32.0]]
+	print('Split {0} rows into train={1} and test={2} rows'.format(len(dataset), len(trainingSet), len(testSet)))
+	# prepare model
+	summaries = summarizeByClass(trainingSet)
+	# test model
+	predictions = getPredictions(summaries, testSet)
+	accuracy = getAccuracy(testSet, predictions)
+	print('Accuracy: {0}%'.format(accuracy))
+
+main()
 
 
 
 
-2. Write a JavaScript that calculates the squares and cubes of the numbers from 0 to
-10 and outputs HTML text that displays the resulting values in an HTML table
-format.
-program2.html
-<!DOCTYPE HTML>
-<html>
-<head>
-<style>
-table,tr, td
-{
-border: solid black;
-width: 33%;
-text-align: center;
-border-collapse: collapse;
-background-color:lightblue;
-}
-table { margin: auto; }
-</style>
-<script>
-document.write( "<table><tr><thcolspan='3'> NUMBERS FROM 0 TO 10 WITH
-THEIR SQUARES AND CUBES </th></tr>" );
-document.write( "<tr><td>Number</td><td>Square</td><td>Cube</td></tr>" );
-for(var n=0; n<=10; n++)
-{
-document.write( "<tr><td>" + n + "</td><td>" + n*n + "</td><td>" + n*n*n
-+ "</td></tr>" ) ;
-}
-document.write( "</table>" ) ;
-</script>
-</head>
-</html>
-
-
-
-3. Write a JavaScript code that displays text “TEXT-GROWING” with increasing
-font size in the interval of 100ms in RED COLOR, when the font size reaches
-50pt it displays “TEXT-SHRINKING” in BLUE color. Then the font size
-decreases to 5pt.
-program3.html
-<!DOCTYPE HTML>
-<html>
-<head>
- <style>
- p {
- position: absolute;
- top: 50%;
- left: 50%;
- transform: translate(-50%, -50%);
- }
- </style>
-</head>
-<body>
-<p id="demo"></p>
-<script>
-var var1 = setInterval(inTimer, 1000);
-var fs = 5;
-var ids = document.getElementById("demo");
-function inTimer() {
- ids.innerHTML = 'TEXT GROWING';
-ids.setAttribute('style', "font-size: " + fs + "px; color: red");
-fs += 5;
-if(fs >= 50 ){
-clearInterval(var1);
-var2 = setInterval(deTimer, 1000);
-}
-}
-FDP-Web Technology Lab With Mini Project – 15CSL77 2018-2019
-Dept. of ISE & CSE, RNSIT Page 10
-function deTimer() {
-fs -= 5;
-ids.innerHTML = 'TEXT SHRINKING';
-ids.setAttribute('style', "font-size: " + fs + "px; color: blue");
-if(fs === 5 ){
-clearInterval(var2);
-}
-}
-</script>
-</body>
-</html>
-
-
-
-4. Develop and demonstrate a HTML5 file that includes JavaScript script that uses
-functions for the following problems:
-a) Parameter: A string
-b) Output: The position in the string of the left-most vowel
-c) Parameter: A number
-d) Output: The number with its digits in the reverse order
-program4.html
-<!DOCTYPE HTML>
-<html>
- <body>
-<script type="text/javascript">
-var str = prompt("Enter the Input","");
- if(!(isNaN(str)))
- {
-var num,rev=0,remainder;
- num = parseInt(str);
- while(num!=0) {
- remainder = num%10;
- num = parseInt(num/10);
- rev = rev * 10 + remainder;
-}
-alert("Reverse of "+str+" is "+rev);
- }
-else
-{
-str = str.toUpperCase();
- for(var i = 0; i < str.length; i++) {
- var chr = str.charAt(i);
- if(chr == 'A' || chr == 'E' || chr == 'I' || chr == 'O' || chr == 'U')break;
-}
-if( i < str.length )
-alert("The position of the left most vowel is "+(i+1));
-else
-alert("No vowel found in the entered string");
- }
-</script>
-</body>
-</html>
-
-
-
-5. Design an XML document to store information about a student in an engineering
-college affiliated to VTU. The information must include USN, Name, and Name
-of the College, Branch, Year of Joining, and email id. Make up sample data for 3
-students. Create a CSS style sheet and use it to display the document.
-program5.xml
-<?xml-stylesheet type="text/css" href="5.css" ?>
-<!DOCTYPE HTML>
-<html>
-<head>
-<h1> STUDENTS DESCRIPTION </h1>
-</head>
-<students>
-<student>
-<USN>USN : 1RN07CS001</USN>
-<name>NAME : SANTHOSH</name>
-<college>COLLEGE : RNSIT</college>
-<branch>BRANCH : Computer Science and Engineering</branch>
-<year>YEAR : 2007</year>
-<e-mail>E-Mail : santosh@gmail.com</e-mail>
-</student>
-<student>
-<USN>USN : 1RN07IS001</USN>
-<name>NAME : MANORANJAN</name>
-<college>COLLEGE : RNSIT</college>
-<branch>BRANCH : Information Science and Engineering</branch>
-<year>YEAR : 2007</year>
-<e-mail>E-Mail : manoranjan@gmail.com</e-mail>
-</student>
-<student>
-<USN>USN : 1RN07EC001</USN>
-<name>NAME : CHETHAN</name>
-<college>COLLEGE : RNSIT</college>
-<branch>BRANCH : Electronics and Communication Engineering
-</branch>
-<year>YEAR : 2007</year>
-<e-mail>E-Mail : chethan@gmail.com</e-mail>
-</student>
-</students>
-</html>
-program5.css
-student{
-display:block; margin-top:10px; color:Navy;
-}
-USN{
-display:block; margin-left:10px;font-size:14pt; color:Red;
-}
-name{
-display:block; margin-left:20px;font-size:14pt; color:Blue;
-}
-college{
-display:block; margin-left:20px;font-size:12pt; color:Maroon;
-}
-branch{
-display:block; margin-left:20px;font-size:12pt; color:Purple;
-}
-year{
-display:block; margin-left:20px;font-size:14pt; color:Green;
-}
-e-mail{
-display:block; margin-left:20px;font-size:12pt; color:Blue;
-}
 
 
 
 
-6. Write a PHP program to keep track of the number of visitors visiting the web
-page and to display this count of visitors, with proper headings.
-program6.php
-<?php
-print "<h3> REFRESH PAGE </h3>";
-$name="counter.txt";
-$file = fopen($name,"r");
-$hits= fscanf($file,"%d");
-fclose($file);
-$hits[0]++;
-$file = fopen($name,"w");
-fprintf($file,"%d",$hits[0]);
-fclose($file);
-print "Total number of views: ".$hits[0];
-?>
 
 
 
 
-7. Write a PHP program to display a digital clock which displays the current time
-of the server.
-program7.php
-<!DOCTYPE HTML>
-<html>
-<head>
-<meta http-equiv="refresh" content="1"/>
-<style>
-p {
-color:white;
-font-size:90px;
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-}
-body{background-color:black;}
-</style>
-<p> <?php echo date(" h: i : s A");?> </p>
-</head>
-
-
-
-8. Write the PHP programs to do the following:
-a) Implement simple calculator operations.
-b) Find the transpose of a matrix.
-c) Multiplication of two matrices.
-d) Addition of two matrices.
-program8a.php
-<html>
-<head>
-<style>
-table, td, th
-{
-border: 1px solid black;
-width: 35%;
-text-align: center;
-background-color: DarkGray;
-}
-table { margin: auto; }
-input,p { text-align:right; }
-</style>
-</head>
-<body>
-<form method="post">
-<table>
-<caption><h2> SIMPLE CALCULATOR </h2></caption>>
-<tr><td>First Number:</td><td><input type="text" name="num1" /></td>
-<td rowspan="2"><input type="submit" name="submit"
-value="calculate"></td></tr>
-<tr><td>Second Number:</td><td><input type="text"
-name="num2"/></td></tr>
-</form>
-<?php
-if(isset($_POST['submit'])) // it checks if the input submit is filled 
-{
-$num1 = $_POST['num1'];
-$num2 = $_POST['num2'];
-if(is_numeric($num1) andis_numeric($num1) )
-{
-echo "<tr><td> Addition :</td><td><p>".($num1+$num2)."</p></td>";
-echo "<tr><td> Subtraction :</td><td><p> ".($num1-$num2)."</p></td>";
-echo "<tr><td> Multiplication :</td><td><p>".($num1*$num2)."</p></td>";
-echo "<tr><td>Division :</td><td><p> ".($num1/$num2)."</p></td>";
-echo "</table>";
-}
-else
-{
-echo"<script type='text/javascript' > alert(' ENTER VALID
-NUMBER');</script>";
-}
-}
-?>
-</body>
-</html>
-
-Output:
-Test Cases:
-Test
-No.
-Input
-Parameters Expected Output Obtained Output Remarks
-1. value1=50.56
-value2=24.39
-Addition =74.95
-Subtraction =26.17
-Multiplication=1233.1584
-Division=2.072980729807298
-Addition =74.95
-Subtraction =26.17
-Multiplication=1233.1584
-Division=2.072980729807298
-PASS
-2. value1= 0
-value2= 45
-Addition =45
-Subtraction =-45
-Multiplication=0
-Division=0
-Addition =45
-Subtraction =-45
-Multiplication=0
-Division=0
-PASS
-3. value1= 45
-value2= 0
-Addition =45
-Subtraction =45
-Multiplication=0
-Division=Infinity
-Addition =45
-Subtraction =45
-Multiplication=0
-Division=Infinity
-PASS
-4. value1 = abc
-value2 = 23 ENTER VALID NUMBER ENTER VALID NUMBER PASS
-5
-value1 = 50
-value2 =xyz ENTER VALID NUMBER ENTER VALID NUMBER PASS
-
-
-
-Program8b.php
-<?php
-$a = array(array(1,2,3),array(4,5,6),array(7,8,9));
-$b = array(array(7,8,9),array(4,5,6),array(1,2,3));
-$m=count($a);
-$n=count($a[2]);
-$p=count($b);
-$q=count($b[2]);
-echo "the first matrix :"."<br/>";
-for ($row = 0; $row < $m; $row++) {
-for ($col = 0; $col < $n; $col++)
- echo " ".$a[$row][$col];
-echo "<br/>";
-}
-echo "the second matrix :"."<br/>";
-for ($row = 0; $row < $p; $row++) {
-for ($col = 0; $col < $q; $col++)
- echo " ".$b[$row][$col];
- echo "<br/>";
-}
-echo "the transpose for the first matrix is:"."<br/>";
-for ($row = 0; $row < $m; $row++) {
-for ($col = 0; $col < $n; $col++)
-echo " ".$a[$col][$row];
-echo "<br/>";
-}
-if(($m===$p) and ($n===$q)) {
-echo "the addition of matrices is:"."<br/>";
-for ($row = 0; $row < 3; $row++) {
-for ($col = 0; $col < 3; $col++)
- echo " ".$a[$row][$col]+$b[$row][$col]." ";
- echo "<br/>";
-}
-}
-if($n===$p){
-echo " The multiplication of matrices: <br/>";
-$result=array();
-for ($i=0; $i < $m; $i++) {
-for($j=0; $j < $q; $j++){
- $result[$i][$j] = 0;
-for($k=0; $k < $n; $k++)
-$result[$i][$j] += $a[$i][$k] * $b[$k][$j];
- }
-}
-for ($row = 0; $row < $m; $row++) {
-for ($col = 0; $col < $q; $col++)
-echo " ".$result[$row][$col];
-echo "<br/>";
-}
-}
-?>
 
 
 
 
-9. Write a PHP program named states.py that declares a variable states with value
-"Mississippi Alabama Texas Massachusetts Kansas". write a PHP program that
-does the following:
-a) Search for a word in variable states that ends in xas. Store this word in
-element 0 of a list named statesList.
-b) Search for a word in states that begins with k and ends in s. Perform a
-case-insensitive comparison. [Note: Passing re.Ias a second parameter to
-method compile performs a case-insensitive comparison.] Store this word
-in element1 of statesList.
-c) Search for a word in states that begins with M and ends in s. Store this
-word in element 2 of the list.
-d) Search for a word in states that ends in a. Store this word in element 3 of
-the list.
-program9.php
-<?php
-$states = "Mississippi Alabama Texas Massachusetts Kansas";
-$statesArray = [];
-$states1 = explode(' ',$states);
-echo "Original Array :<br>";
-foreach ( $states1 as $i => $value )
-print("STATES[$i]=$value<br>");
-foreach($states1 as $state) {
-if(preg_match( '/xas$/', ($state)))
-$statesArray[0] = ($state);
-}
-foreach($states1 as $state) {
-if(preg_match('/^k.*s$/i', ($state)))
-$statesArray[1] = ($state);
-}
-FDP-Web Technology Lab With Mini Project – 15CSL77 2018-2019
-Dept. of ISE & CSE, RNSIT Page 26
-foreach($states1 as $state) {
-if(preg_match('/^M.*s$/', ($state)))
-$statesArray[2] = ($state);
-}
-foreach($states1 as $state){
-if(preg_match('/a$/', ($state)))
-$statesArray[3] = ($state);
-}
-echo "<br><br>Resultant Array :<br>";
-foreach ( $statesArray as $array => $value )
-print("STATES[$array]=$value<br>");
-?>
 
 
 
 
-10. Write a PHP program to sort the student records which are stored in the
-database using selection sort.
-Goto Mysql and then type
-create database weblab;
-use weblab;
-create table student(usnvarchar(10),name varchar(20),address varchar(20));
-program10.php
-<!DOCTYPE html>
-<html>
-<body>
-<style>
-table, td, th
-{
-border: 1px solid black;
-width: 33%;
-text-align: center;
-border-collapse:collapse;
-background-color:lightblue;
-}
-table { margin: auto; }
-</style>
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "weblab";
-$a=[];
-// Create connection
-// Opens a new connection to the MySQL server
-$conn = mysqli_connect($servername, $username, $password, $dbname); 
-// Check connection and return an error description from the last
-connection error, if any
-if ($conn->connect_error)
-die("Connection failed: " . $conn->connect_error);
-$sql = "SELECT * FROM student";
-// performs a query against the database
-$result = $conn->query($sql);
-echo "<br>";
-echo "<center> BEFORE SORTING </center>";
-echo "<table border='2'>";
-echo "<tr>";
-echo "<th>USN</th><th>NAME</th><th>Address</th></tr>";
-if ($result->num_rows> 0)
-{
-// output data of each row and fetches a result row as an
-associative array
-while($row = $result->fetch_assoc()){
-echo "<tr>";
-echo "<td>". $row["usn"]."</td>";
-echo "<td>". $row["name"]."</td>";
-echo "<td>". $row["addr"]."</td></tr>";
-array_push($a,$row["usn"]);
-}
-}
-else
-echo "Table is Empty";
-echo "</table>";
-$n=count($a);
-$b=$a;
-for ( $i = 0 ; $i< ($n - 1) ; $i++ )
-{
-$pos= $i;
-for ( $j = $i + 1 ; $j < $n ; $j++ ) {
-if ( $a[$pos] > $a[$j] )
-$pos= $j;
-}
-if ( $pos!= $i ) {
-$temp=$a[$i];
-$a[$i] = $a[$pos];
-$a[$pos] = $temp;
-}
-}
-$c=[];
-$d=[];
-$result = $conn->query($sql);
-if ($result->num_rows> 0)// output data of each row
-{
-while($row = $result->fetch_assoc()) {
-for($i=0;$i<$n;$i++) {
-if($row["usn"]== $a[$i]) {
-$c[$i]=$row["name"];
-$d[$i]=$row["addr"];
-}
-}
-}
-}
-echo "<br>";
-echo "<center> AFTER SORTING <center>";
-echo "<table border='2'>";
-echo "<tr>";
-echo "<th>USN</th><th>NAME</th><th>Address</th></tr>";
-for($i=0;$i<$n;$i++) {
-echo "<tr>";
-echo "<td>". $a[$i]."</td>";
-echo "<td>". $c[$i]."</td>";
-echo "<td>". $d[$i]."</td></tr>";
-}
-echo "</table>";
-$conn->close();
-?>
-</body>
-</html>
+
+
+
+6th program
+
+import csv
+import random
+import math
+
+def loadCsv(filename):
+	lines = csv.reader(open(filename, "r"))
+	dataset = list(lines)
+	for i in range(len(dataset)):
+		dataset[i] = [float(x) for x in dataset[i]]
+	return dataset
+
+def splitDataset(dataset, splitRatio):
+	trainSize = int(len(dataset) * splitRatio)
+	trainSet = []
+	copy = list(dataset)
+	while len(trainSet) < trainSize:
+		index = random.randrange(len(copy))
+		trainSet.append(copy.pop(index))
+	return [trainSet, copy]
+
+def separateByClass(dataset):
+	separated = {}
+	for i in range(len(dataset)):
+		vector = dataset[i]
+		if (vector[-1] not in separated):
+			separated[vector[-1]] = []
+		separated[vector[-1]].append(vector)
+	return separated
+
+def mean(numbers):
+	return sum(numbers)/float(len(numbers))
+
+def stdev(numbers):
+	avg = mean(numbers)
+	variance = sum([pow(x-avg,2) for x in numbers])/float(len(numbers)-1)
+	return math.sqrt(variance)
+
+def summarize(dataset):
+	summaries = [(mean(attribute), stdev(attribute)) for attribute in zip(*dataset)]
+	del summaries[-1]
+	return summaries
+
+def summarizeByClass(dataset):
+	separated = separateByClass(dataset)
+	summaries = {}
+	for classValue, instances in separated.items():
+		summaries[classValue] = summarize(instances)
+	return summaries
+
+def calculateProbability(x, mean, stdev):
+	exponent = math.exp(-(math.pow(x-mean,2)/(2*math.pow(stdev,2))))
+	return (1 / (math.sqrt(2*math.pi) * stdev)) * exponent
+
+def calculateClassProbabilities(summaries, inputVector):
+	probabilities = {}
+	for classValue, classSummaries in summaries.items():
+		probabilities[classValue] = 1
+		for i in range(len(classSummaries)):
+			mean, stdev = classSummaries[i]
+			x = inputVector[i]
+			probabilities[classValue] *= calculateProbability(x, mean, stdev)
+	return probabilities
+			
+def predict(summaries, inputVector):
+	probabilities = calculateClassProbabilities(summaries, inputVector)
+	bestLabel, bestProb = None, -1
+	for classValue, probability in probabilities.items():
+		if bestLabel is None or probability > bestProb:
+			bestProb = probability
+			bestLabel = classValue
+	return bestLabel
+
+def getPredictions(summaries, testSet):
+	predictions = []
+	for i in range(len(testSet)):
+		result = predict(summaries, testSet[i])
+		predictions.append(result)
+	return predictions
+
+def getAccuracy(testSet, predictions):
+    correct = 0
+    truepos = 0
+    trueneg = 0
+    pos = 0
+    neg = 0
+    for i in range(len(testSet)):
+        #print(testSet[i][-1]," ",predictions[i])
+        if testSet[i][-1] == predictions[i]:
+            correct += 1
+        if testSet[i][-1] == 1 and predictions[i] == 1:
+            truepos += 1
+        if testSet[i][-1] == 0 and predictions[i] == 0:
+            trueneg += 1
+        if testSet[i][-1] == 1:
+            pos += 1
+        else:
+            neg += 1
+            
+    acc = correct/float(len(testSet)) * 100.0
+    preci = truepos/float(truepos + (pos - truepos)) * 100.0
+    recal = truepos/float(truepos + (neg - trueneg)) * 100.0
+    return (acc, preci, recal)
+
+def main():
+	filename = 'pima-indians-diabetes.csv'
+	splitRatio = 0.67
+	dataset = loadCsv(filename)
+	trainingSet,testSet=splitDataset(dataset, splitRatio) #dividing into training and test data
+	#trainingSet = dataset #passing entire dataset as training data
+	#testSet=[[8.0,183.0,64.0,0.0,0.0,23.3,0.672,32.0]]
+	print('Split {0} rows into train={1} and test={2} rows'.format(len(dataset), len(trainingSet), len(testSet)))
+	# prepare model
+	summaries = summarizeByClass(trainingSet)
+	# test model
+	predictions = getPredictions(summaries, testSet)
+	accuracy, precision, recall = getAccuracy(testSet, predictions)
+	print('Accuracy: {0}%, precision: {1}% recall:{2} %'.format(accuracy, precision, recall))
+
+main()
+
+
+
+
+
+
+
+7th program
+
+import numpy as np
+import pandas as pd
+import csv
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.models import BayesianModel
+from pgmpy.inference import VariableElimination
+lines = list(csv.reader(open('heartdisease.csv', 'r')));
+attributes = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang',
+ 'oldpeak', 'slope', 'ca', 'thal', 'heartdisease']
+#Read Cleveland Heart dicease data
+heartDisease = pd.read_csv('heartdisease.csv', names = attributes)
+heartDisease = heartDisease.replace('?', np.nan)
+# Display the data
+print('Few examples from the dataset are given below')
+print(heartDisease.head())
+print('\nAttributes and datatypes')
+print(heartDisease.dtypes)
+# Model Baysian Network
+model = BayesianModel([('age', 'trestbps'), ('age', 'fbs'), ('sex', 'trestbps'), ('sex', 'trestbps'),
+('exang', 'trestbps'),('trestbps','heartdisease'),('fbs','heartdisease'),
+('heartdisease','restecg'),('heartdisease','thalach'),('heartdisease','chol')])
+# Learning CPDs using Maximum Likelihood Estimators
+print('\nLearning CPDs using Maximum Likelihood Estimators...');
+model.fit(heartDisease, estimator=MaximumLikelihoodEstimator)
+# Inferencing with Bayesian Network
+print('\nInferencing with Bayesian Network:')
+HeartDisease_infer = VariableElimination(model)
+# Computing the probability of bronc given smoke.
+print('\n1.Probability of HeartDisease given Age=20')
+q = HeartDisease_infer.query(variables=['heartdisease'], evidence={'age': 28})
+print(q['heartdisease'])
+print('\n2. Probability of HeartDisease given chol (Cholestoral) =100')
+q = HeartDisease_infer.query(variables=['heartdisease'], evidence={'chol': 100})
+print(q['heartdisease'])
+
+
+
+
+
+
+
+8th program 
+
+from sklearn.mixture import GaussianMixture
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.cluster import KMeans
+import pandas as pd
+import numpy as np
+# import some data to play with
+iris = datasets.load_iris()
+X = pd.DataFrame(iris.data)
+X.columns = ['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
+y = pd.DataFrame(iris.target)
+y.columns = ['Targets']
+# Build the K Means Model
+model = KMeans(n_clusters=3)
+model.fit(X) # model.labels_ : Gives cluster no for which samples belongs to
+# # Visualise the clustering results
+plt.figure(figsize=(14,14))
+colormap = np.array(['red', 'lime', 'black'])
+# Plot the Original Classifications using Petal features
+plt.subplot(2, 2, 1)
+plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[y.Targets], s=40)
+plt.title('Real Clusters')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+# Plot the Models Classifications
+plt.subplot(2, 2, 2)
+plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[model.labels_], s=40)
+plt.title('K-Means Clustering')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+# General EM for GMM
+# transform your data such that its distribution will have a
+# mean value 0 and standard deviation of 1.
+scaler = preprocessing.StandardScaler()
+scaler.fit(X)
+xsa = scaler.transform(X)
+xs = pd.DataFrame(xsa, columns = X.columns)
+gmm = GaussianMixture(n_components=3)
+gmm.fit(xs)
+gmm_y = gmm.predict(xs)
+plt.subplot(2, 2, 3)
+plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[gmm_y], s=40)
+plt.title('GMM Clustering')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+print('Observation: The GMM using EM algorithm based clustering matched the true labels more closely than the Kmeans.')
+
+
+
+
+9th orogram
+
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import datasets
+# Load dataset
+iris=datasets.load_iris()
+print("Iris Data set loaded...")
+# Split the data into train and test samples
+x_train, x_test, y_train, y_test = train_test_split(iris.data,iris.target,test_size=0.1)
+print("Dataset is split into training and testing...")
+print("Size of trainng data and its label",x_train.shape,y_train.shape)
+print("Size of trainng data and its label",x_test.shape, y_test.shape)
+# Prints Label no. and their names
+for i in range(len(iris.target_names)):
+    print("Label", i , "-",str(iris.target_names[i]))
+# Create object of KNN classifier
+classifier = KNeighborsClassifier(n_neighbors=1)
+# Perform Training
+classifier.fit(x_train, y_train)
+# Perform testing
+y_pred=classifier.predict(x_test)
+# Display the results
+print("Results of Classification using K-nn with K=1 ")
+for r in range(0,len(x_test)):
+    print(" Sample:", str(x_test[r]), " Actual-label:", str(y_test[r]), " Predicted-label:",str(y_pred[r]))
+print("Classification Accuracy :" , classifier.score(x_test,y_test));
+#from sklearn.metrics import classification_report, confusion_matrix
+#print('Confusion Matrix')
+#print(confusion_matrix(y_test,y_pred))
+#print('Accuracy Metrics')
+#print(classification_report(y_test,y_pred))
